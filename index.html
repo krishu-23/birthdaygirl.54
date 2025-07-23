@@ -170,12 +170,12 @@
 
 <body>
     <div id="app">
-        <audio id="bg-music" autoplay loop>
-  <source src="romantic.mp3.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-
         <div id="canvas-container"></div>
+         <audio id="bg-music" autoplay loop>
+            <source src="romantic.mp3.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+         <button class="btn absolute top-4 right-4 z-50" id="toggle-music">🔊</button>
 
         <div id="progress-container">
             <div id="progress-bar"></div>
@@ -485,6 +485,20 @@
                     ease: "power1.out"
                 });
             });
+        });
+        const music = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("toggle-music");
+
+        music.volume = 0.5;
+
+        musicToggle.addEventListener("click", () => {
+            if (music.paused) {
+                music.play();
+                musicToggle.textContent = "🔊";
+            } else {
+                music.pause();
+                musicToggle.textContent = "🔇";
+            }
         });
 
         // Initialize progress bar
