@@ -486,20 +486,8 @@
                 });
             });
         });
-        const music = document.getElementById("bg-music");
-        const musicToggle = document.getElementById("toggle-music");
-
-        music.volume = 0.5;
-
-        musicToggle.addEventListener("click", () => {
-            if (music.paused) {
-                music.play();
-                musicToggle.textContent = "🔊";
-            } else {
-                music.pause();
-                musicToggle.textContent = "🔇";
-            }
-        });
+ 
+   });
 
         // Initialize progress bar
         updateProgressBar();
