@@ -487,6 +487,18 @@
         });
  
    });
+        document.getElementById('toggle-music').addEventListener('click', () => {
+            const music = document.getElementById('bg-music');
+            const icon = document.getElementById('toggle-music');
+
+            if (music.paused) {
+                music.play();
+                icon.textContent = '🔊';
+            } else {
+                music.pause();
+                icon.textContent = '🔇';
+            }
+        });
 
         // Initialize progress bar
         updateProgressBar();
@@ -494,4 +506,5 @@
 </body>
 
 </html>
+
 
