@@ -37,7 +37,7 @@
         }
 
         .step {
-            position: absolute;
+            position: relative; /* changed to relative so content can scroll on mobile */
             width: 100%;
             max-width: 800px;
             padding: 40px;
@@ -49,6 +49,9 @@
             opacity: 0;
             transform: translateY(20px);
             pointer-events: none;
+            margin: 20px auto; /* centers and provides spacing */
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
         }
 
         .step.active {
@@ -141,6 +144,13 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            pointer-events: none; /* prevent canvas from blocking UI */
+        }
+
+        /* small screens adjustments */
+        @media (max-width: 640px) {
+            .step { padding: 24px; }
+            .emoji { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -150,8 +160,9 @@
         <div id="canvas-container"></div>
         <audio id="bg-music" loop>
             <source src="romantic.mp3" type="audio/mpeg">
+            <!-- If audio isn't available the element will be ignored gracefully -->
         </audio>
-        <button class="btn absolute top-4 right-4 z-50" id="toggle-music">🔇</button>
+        <button class="btn absolute top-4 right-4 z-50" id="toggle-music" aria-pressed="false">🔇</button>
 
         <div id="progress-container">
             <div id="progress-bar"></div>
@@ -162,20 +173,19 @@
             <div class="step active" id="step1">
                 <div class="emoji heart-beat">❤️</div>
                 <h1 class="text-4xl md:text-5xl font-bold mb-6 text-gradient">Oyeeee Birthday Girl...!</h1>
-                <p class="text-xl text-gray-700 mb-8">Aapke liye hm kuch banaye hain..</p>
+                <p class="text-xl text-gray-700 mb-8">Aapke liye humne kuch banaya hai..</p>
                 <button class="btn" id="start-btn">Let's Begin</button>
             </div>
 
             <!-- Step 2 -->
             <div class="step" id="step2">
                 <div class="emoji">🎉</div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">Happy Birthday Anshu!💌</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">Happy Birthday meriii Anshu!💌</h2>
                 <p class="text-lg text-gray-700 mb-6">
-                     Aap aise hi hamesha muskurate rahye..kyunki muskurate hue aap bhutttttt pyaari lagti hain missti..aapko jo sab chahiye 
-                    vo sab mile aapko..jo nhi bhi chahiye vo bhi mil jaye..! Aap duniya ki sabse aachi ladki hain jaan..aapko pata hai aap
-                                          kesi lagti hain..aap na bilkul meri jaan lagti hain..!😘�
+                    Aap aise hi hamesha muskurate rahiyega.. kyunki muskurate hue aap bahut pyaari lagti hain. Aapko jo chahiye
+                    vo mile, aur jo nahi chahiye vo bhi mile — aap duniya ki sabse aachi ladki hain jaan. Aap bilkul meri jaan lagti hain..! 😘
                 </p>
-                <button class="btn" id="next-btn-2">Ek chiz batyein aapko jaan..?🌸</button>
+                <button class="btn" id="next-btn-2">Ek chiz batayein aapko jaan..?🌸</button>
             </div>
 
             <!-- Step 3 -->
@@ -185,21 +195,17 @@
                     <div class="reason-card">
                         <div class="emoji">✨</div>
                         <h3 class="text-xl font-bold mb-2 text-pink-600">Aapka mann✨</h3>
-                        <p class="text-gray-700">Aapka mann ek dum gangajal jesa saaf hai jaan..koi bekar ki batein nhi..ek dum meri 
-                        pyaari si cutiee jesa mann hai aapka..</p>
+                        <p class="text-gray-700">Aapka mann ek dum saaf hai — sachi pyaari cutie si personality.</p>
                     </div>
                     <div class="reason-card">
                         <div class="emoji">😊</div>
                         <h3 class="text-xl font-bold mb-2 text-pink-600">Aapki smile😊</h3>
-                        <p class="text-gray-700">Aapki smile itni pyaari hai na..ki kya hi kahein hm..aapko aise haste
-                            hue dekh kar to dil garden garden ho jata hai.. 🌸</p>
+                        <p class="text-gray-700">Aapki smile itni pyaari hai ki dil garden garden ho jata hai. 🌸</p>
                     </div>
                     <div class="reason-card">
                         <div class="emoji">🌟</div>
                         <h3 class="text-xl font-bold mb-2 text-pink-600">Aapka vyavhaar💖</h3>
-                        <p class="text-gray-700">aapka nature hi to dekh kar main aap par fida ho gaya.! aap kitne pyaar se baatein karti hain
-                            ye hamshe puchiye na..kyunki aap chahe guussa mein baat kar rahi ho ya pyaar se..dono time mujhe bas aapki 
-                            baatein sunni hoti hai.!💞</p>
+                        <p class="text-gray-700">Aap kitni pyaar se baat karti hain — chahe guussa ho ya pyaar, dono mein aapka andaaz alag hi pyaara hai.</p>
                     </div>
                 </div>
                 <button class="btn" id="next-btn-3">🎉🥳 Surprise! 🎉🥳</button>
@@ -208,14 +214,13 @@
             <!-- Step 4 -->
             <div class="step" id="step4">
                 <div class="emoji">📸</div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">aur ye rhe hai hm aur aap..</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">aur ye rhe hai hum aur aap..</h2>
                 <div class="bg-gradient-to-r from-pink-200 to-rose-200 rounded-xl p-8 mb-8 flex flex-col items-center">
-                    <img src="crush.webp" height="200" width="200" alt="">
+                    <img src="crush.webp" height="200" width="200" alt="photo" id="crush-img" onerror="this.style.display='none'">
                     <p class="text-lg text-gray-700 italic mt-2">(❤)</p>
                 </div>
                 <p class="text-lg text-gray-700 mb-6">
-                    Aap "THE BEST" hain meri jaan..aap na jesi hain bhut aachi hain..kabhi bhi ye bahar ki duniya ke karan badalyega mat..
-                 Aur hamesha mere pass hi rhyega meri pyaari si unlimited 5g ban kar..aur aise hi haste khelte rhye meri annuuuu💞..️️
+                    Aap "THE BEST" hain meri jaan — kabhi bhi bahar ki duniya ke karan badalna mat. Hamesha mere paas hi raho meri pyaari si annuuuu. 💞
                 </p>
                 <button class="btn" id="next-btn-4">EK last chiz aapke liye🥰</button>
             </div>
@@ -223,16 +228,15 @@
             <!-- Step 5 -->
             <div class="step" id="step5">
                 <div class="emoji">🎂</div>
-                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">Thoda sa maaf kar dejiye ga..!</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gradient">Thoda sa maaf kar dijiye ga..!</h2>
                 <p class="text-lg text-gray-700 mb-8">
-                    Maaf karyega meri jaan hm aapko iss birthday per kuch de nhi paye kuch khass bhi nhi kar paye..sorry jaan..lekin ek chiz to hm aapse hamesha karte hain aur karte rahenge
-                    jo ki hai ____❤️..(ye to aapko malum hi hoga ki hm kya likhna chah rhe hain..😁)agr aapko pata chal hi gaya hai to aapke reply ka wait karunga main..
+                    Maaf kijiye meri jaan agar is birthday par kuch khaas nahi de paaye. Lekin ek cheez hum hamesha karenge — pyaar ❤️.
                 </p>
                 <p class="text-xl font-semibold text-pink-600 mb-8">
-                    Happy Birthday meri Anshuuuuu💖�
+                    Happy Birthday meri Anshuuuuu💖
                 </p>
-                <button class="btn" id="confetti-btn">Don ka B'day "button hai ye press karye!"</button>
-                <p class="mt-8 text-gray-500">Aapke liye sirf meri bestieee😙😙😙😙😙😙😙😙💞</p>
+                <button class="btn" id="confetti-btn">Don ka B'day - press this!</button>
+                <p class="mt-8 text-gray-500">Aapke liye sirf meri bestieee 😙💞</p>
             </div>
         </div>
     </div>
@@ -248,31 +252,30 @@
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 30;
 
+        // Improved heart shape coordinates for a recognisable heart
         const heartShape = new THREE.Shape();
-        const x = 0, y = 0;
-        heartShape.moveTo(x + 0.5, y + 0.5);
-        heartShape.bezierCurveTo(x + 0.5, y + 0.5, x + 1, y, x, y);
-        heartShape.bezierCurveTo(x - 1, y, x - 1, y + 1.5, x - 1, y + 1.5);
-        heartShape.bezierCurveTo(x - 1, y + 2.5, x + 0.5, y + 3.5, x + 0.5, y + 3.5);
-        heartShape.bezierCurveTo(x + 0.5, y + 3.5, x + 2, y + 2.5, x + 2, y + 1.5);
-        heartShape.bezierCurveTo(x + 2, y + 1.5, x + 2, y, x + 1, y);
-        heartShape.bezierCurveTo(x + 0.5, y, x + 0.5, y + 0.5, x + 0.5, y + 0.5);
+        heartShape.moveTo(0, 0);
+        heartShape.bezierCurveTo(0, 3, -3, 3, -3, 0);
+        heartShape.bezierCurveTo(-3, -3, 0, -3, 0, -1.5);
+        heartShape.bezierCurveTo(0, -3, 3, -3, 3, 0);
+        heartShape.bezierCurveTo(3, 3, 0, 3, 0, 0);
 
         const heartGeometry = new THREE.ExtrudeGeometry(heartShape, { depth: 0.5, bevelEnabled: true, bevelSize: 0.2, bevelThickness: 0.3 });
         const hearts = [];
         const colors = [0xff6b6b, 0xff8e8e, 0xffb3b3, 0xffd8d8];
 
-        for (let i = 0; i < 25; i++) {
+        // reduced count for better performance on mobile
+        for (let i = 0; i < 15; i++) {
             const material = new THREE.MeshPhongMaterial({
                 color: colors[Math.floor(Math.random() * colors.length)],
                 emissive: 0xff0000,
-                emissiveIntensity: 0.1,
+                emissiveIntensity: 0.05,
                 transparent: true,
-                opacity: 0.9
+                opacity: 0.95
             });
             const heart = new THREE.Mesh(heartGeometry, material);
             heart.position.set((Math.random() - 0.5) * 50, (Math.random() - 0.5) * 50, (Math.random() - 0.5) * 50);
-            const scale = Math.random() * 0.8 + 0.5;
+            const scale = Math.random() * 0.8 + 0.6;
             heart.scale.set(scale, scale, scale);
             heart.userData = {
                 rotationSpeedX: Math.random() * 0.01,
@@ -294,7 +297,7 @@
             hearts.forEach(h => {
                 h.rotation.x += h.userData.rotationSpeedX;
                 h.rotation.y += h.userData.rotationSpeedY;
-                h.position.y = h.userData.originalY + Math.sin(time) * 0.5;
+                h.position.y = h.userData.originalY + Math.sin(time + h.userData.rotationSpeedX * 100) * 0.5;
             });
             renderer.render(scene, camera);
         }
@@ -309,48 +312,70 @@
         // === Step Navigation ===
         let currentStep = 1, totalSteps = 5;
         function updateProgressBar() {
+            // shows progress from 0% at step1 to 100% at step5
             const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
             document.getElementById('progress-bar').style.width = `${progress}%`;
         }
 
         function showStep(stepNumber) {
-            gsap.to(".step.active", {
-                opacity: 0, y: 20, duration: 0.5, onComplete: () => {
-                    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-                    const next = document.getElementById(`step${stepNumber}`);
-                    next.classList.add('active');
-                    gsap.fromTo(next, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8 });
-                    updateProgressBar();
-                }
-            });
+            const current = document.querySelector('.step.active');
+            const next = document.getElementById(`step${stepNumber}`);
+            if (!next || current === next) return;
+
+            gsap.to(current, { opacity: 0, y: 20, duration: 0.45, onComplete: () => {
+                current.classList.remove('active');
+                next.classList.add('active');
+                gsap.fromTo(next, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 });
+                currentStep = stepNumber;
+                updateProgressBar();
+                // ensure keyboard focus is on the newly active container for accessibility
+                next.setAttribute('tabindex', '-1');
+                next.focus();
+            }});
         }
 
-        document.getElementById('start-btn').onclick = () => { currentStep = 2; showStep(currentStep); };
-        document.getElementById('next-btn-2').onclick = () => { currentStep = 3; showStep(currentStep); };
-        document.getElementById('next-btn-3').onclick = () => { currentStep = 4; showStep(currentStep); };
-        document.getElementById('next-btn-4').onclick = () => { currentStep = 5; showStep(currentStep); };
+        document.getElementById('start-btn').onclick = () => { showStep(2); };
+        document.getElementById('next-btn-2').onclick = () => { showStep(3); };
+        document.getElementById('next-btn-3').onclick = () => { showStep(4); };
+        document.getElementById('next-btn-4').onclick = () => { showStep(5); };
 
         // === Confetti ===
         document.getElementById('confetti-btn').onclick = () => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff0000', '#ff69b4'] });
+            // generic confetti first
+            confetti({ particleCount: 180, spread: 70, origin: { y: 0.6 }, colors: ['#ff5c7c', '#ff9aa2', '#ffd1dc'] });
+            // small burst after
             setTimeout(() => {
-                confetti({ particleCount: 30, spread: 60, origin: { y: 0.5 }, shapes: ['heart'], colors: ['#ff0000', '#ff69b4'] });
+                confetti({ particleCount: 40, spread: 60, origin: { y: 0.5 } });
             }, 400);
         };
 
         // === Music Toggle ===
         const music = document.getElementById("bg-music");
         const toggleMusic = document.getElementById("toggle-music");
-        toggleMusic.addEventListener("click", () => {
-            if (music.paused) {
-                music.play();
-                toggleMusic.textContent = "🔊";
-            } else {
-                music.pause();
-                toggleMusic.textContent = "🔇";
+
+        // if audio not supported / file missing, hide toggle
+        music.addEventListener('error', () => {
+            toggleMusic.style.display = 'none';
+        });
+
+        toggleMusic.addEventListener("click", async () => {
+            try {
+                if (music.paused) {
+                    await music.play();
+                    toggleMusic.textContent = "🔊";
+                    toggleMusic.setAttribute('aria-pressed', 'true');
+                } else {
+                    music.pause();
+                    toggleMusic.textContent = "🔇";
+                    toggleMusic.setAttribute('aria-pressed', 'false');
+                }
+            } catch (e) {
+                // browsers may block play() until user gesture; this click is a user gesture so it should work
+                console.warn('Audio play failed:', e);
             }
         });
 
+        // initialize progress bar
         updateProgressBar();
     </script>
 </body>
